@@ -1,1 +1,1 @@
-# Agents: signal, strategy, positioning, long_form, short_form, critique, orchestration
+# This file is intentionally left as a package marker.

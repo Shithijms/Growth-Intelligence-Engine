@@ -1,0 +1,106 @@
+# DataVex Growth Intelligence Engine — Implementation Plan
+
+## Overview
+
+A production-grade multi-agent content intelligence pipeline that converts a keyword into publish-ready blog, LinkedIn, and Twitter content. Built with FastAPI + LangGraph (backend) and Next.js 14 (frontend).
+
+## Proposed Changes
+
+---
+
+### Backend
+
+#### [NEW] `backend/` — FastAPI + LangGraph Python Package
+
+**File layout:**
+```
+backend/
+├── main.py                    # FastAPI app, CORS, /health, /run-pipeline (SSE)
+├── config.py                  # Pydantic settings (API keys)
+├── models.py                  # All Pydantic I/O models
+├── requirements.txt
+├── agents/
+│   ├── base.py                # Shared Claude client + base system prompt
+│   ├── signal_discovery.py    # Tavily search → top 5 signals
+│   ├── signal_scorer.py       # 4-dim scoring + composite
+│   ├── signal_validator.py    # URL check + fact extraction
+│   ├── serp_scanner.py        # Competitor angles + gaps
+│   ├── strategy_brief.py      # Editorial brief generation
+│   ├── blog_generator.py      # 800-1200 word SEO blog
+│   ├── blog_critique.py       # 6-dim critique, 2-iteration loop
+│   ├── short_form_generator.py# LinkedIn + Twitter
+│   └── short_form_critique.py # 5-dim critique, 2-iteration loop
+└── pipeline/
+    ├── state.py               # TypedDict state schema
+    ├── graph.py               # LangGraph StateGraph definition
+    ├── quality_gate.py        # Gate: 7/10 threshold, max 3 iters
+    └── output_assembler.py    # Final JSON assembly
+```
+
+**Key dependencies:**
+- `fastapi`, `uvicorn`, `sse-starlette`
+- `anthropic` (Claude claude-sonnet-4-6)
+- `tavily-python`
+- `langgraph`, `langchain-anthropic`
+- `httpx`, `pydantic`, `python-dotenv`
+
+---
+
+### Frontend
+
+#### [NEW] `frontend/` — Next.js 14 App Router Dashboard
+
+**File layout:**
+```
+frontend/
+├── app/
+│   ├── layout.tsx             # Root layout, dark theme, fonts
+│   ├── page.tsx               # Redirect → /dashboard
+│   └── dashboard/
+│       └── page.tsx           # Main dashboard orchestrator
+├── components/
+│   ├── panels/
+│   │   ├── KeywordInput.tsx   # Panel 1
+│   │   ├── SignalReport.tsx   # Panel 2
+│   │   ├── StrategyBrief.tsx  # Panel 3
+│   │   ├── BlogOutput.tsx     # Panel 4
+│   │   ├── LinkedInOutput.tsx # Panel 5
+│   │   ├── TwitterOutput.tsx  # Panel 6
+│   │   ├── CritiqueTrace.tsx  # Panel 7
+│   │   └── QualityGateLog.tsx # Panel 8
+│   └── ui/                    # shadcn/ui components
+├── lib/
+│   ├── api.ts                 # SSE streaming client
+│   └── types.ts               # TypeScript types mirroring backend models
+└── tailwind.config.ts
+```
+
+**Key dependencies:**
+- `next@14`, `react`, `tailwindcss`, `shadcn-ui`
+- `react-markdown` (blog rendering)
+- `recharts` (score evolution charts)
+- `diff` (before/after diff view in Panel 7)
+
+---
+
+## Verification Plan
+
+### Automated Tests
+```bash
+# Backend health check
+curl http://localhost:8000/health
+
+# Run full pipeline
+curl -X POST http://localhost:8000/run-pipeline \
+  -H "Content-Type: application/json" \
+  -d '{"keyword": "revenue intelligence"}'
+```
+
+### Manual Verification (Browser)
+1. Open `http://localhost:3000/dashboard`
+2. Enter "revenue intelligence" → click Run Pipeline
+3. Verify live progress indicator moves through stages
+4. Verify all 8 panels populate with data
+5. Verify score evolution charts display Draft 1 vs Draft 2 vs Final
+6. Verify Export JSON downloads complete output
+7. Repeat for "data warehouse cost optimization" and "AI in RevOps"

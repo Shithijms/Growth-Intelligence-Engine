@@ -1,0 +1,113 @@
+# DataVex Growth Intelligence Engine — Build Walkthrough
+
+## What Was Built
+
+A production-grade multi-agent AI content pipeline — end-to-end — from a single keyword input to publish-ready blog, LinkedIn, and Twitter content with quality scoring.
+
+---
+
+## Backend (FastAPI + LangGraph)
+
+### File Structure
+```
+backend/
+├── main.py                 # FastAPI app: /health, /run-pipeline (SSE), /run-pipeline-sync
+├── config.py               # Pydantic settings loading .env
+├── models.py               # Full Pydantic model hierarchy for all I/O
+├── agents/                 # 10 AI agents (all using claude-sonnet-4-6)
+│   ├── base.py             # Shared Claude client + brand system prompt
+│   ├── signal_discovery.py # Tavily search → top 5 signals
+│   ├── signal_scorer.py    # 4-dim confidence scoring (authority/recency/relevance/novelty)
+│   ├── signal_validator.py # URL reachability + Claude fact extraction
+│   ├── serp_scanner.py     # Tavily SERP → competitor angles + content gaps
+│   ├── strategy_brief.py   # Editorial brief with rejected angles + rationale
+│   ├── blog_generator.py   # 800-1200w SEO blog post generation
+│   ├── blog_critique.py    # 6-dimension critique (hook/clarity/authority/differentiation/structure/brand)
+│   ├── short_form_generator.py  # LinkedIn (200-300w) + Twitter thread (6-8 tweets)
+│   └── short_form_critique.py  # 5-dimension critique (hook/platform/engagement/share/brand)
+└── pipeline/
+    ├── graph.py            # LangGraph StateGraph: 16 nodes, linear flow
+    ├── state.py            # TypedDict pipeline state schema
+    ├── quality_gate.py     # 7/10 threshold gate, max 3 iterations
+    └── output_assembler.py # Assembles final PipelineOutput JSON
+```
+
+### Pipeline Flow (16 LangGraph nodes)
+```
+discover_signals → score_signals → validate_signal → scan_serp
+→ strategy_brief
+→ generate_blog_draft1 → critique_blog_1 → generate_blog_draft2 → critique_blog_2 → blog_quality_gate
+→ generate_short_form_draft1 → critique_short_form_1 → generate_short_form_draft2 → critique_short_form_2 → short_form_quality_gate
+→ assemble_output
+```
+
+---
+
+## Frontend (Next.js 14)
+
+### 8 Dashboard Panels
+| Panel | File | Description |
+|-------|------|-------------|
+| 1 | [KeywordInput.tsx](file:///c:/Users/Shithij/CodingProjects/Growth-Intelligence-Engine/frontend/components/panels/KeywordInput.tsx) | Text input, Run button, live stage pills progress |
+| 2 | [SignalReport.tsx](file:///c:/Users/Shithij/CodingProjects/Growth-Intelligence-Engine/frontend/components/panels/SignalReport.tsx) | Signal card, 4-dim + composite score bars, gaps highlighted |
+| 3 | [StrategyBriefPanel.tsx](file:///c:/Users/Shithij/CodingProjects/Growth-Intelligence-Engine/frontend/components/panels/StrategyBriefPanel.tsx) | Chosen angle, rejected angles accordion, platform plan |
+| 4 | [BlogOutputPanel.tsx](file:///c:/Users/Shithij/CodingProjects/Growth-Intelligence-Engine/frontend/components/panels/BlogOutputPanel.tsx) | Markdown preview + raw tab, meta fields, score evolution chart |
+| 5 | [LinkedInOutputPanel.tsx](file:///c:/Users/Shithij/CodingProjects/Growth-Intelligence-Engine/frontend/components/panels/LinkedInOutputPanel.tsx) | Simulated LinkedIn card, score evolution chart |
+| 6 | [TwitterOutputPanel.tsx](file:///c:/Users/Shithij/CodingProjects/Growth-Intelligence-Engine/frontend/components/panels/TwitterOutputPanel.tsx) | Per-tweet cards with char count, score chart |
+| 7 | [CritiqueTracePanel.tsx](file:///c:/Users/Shithij/CodingProjects/Growth-Intelligence-Engine/frontend/components/panels/CritiqueTracePanel.tsx) | Asset tabs, per-draft score cards, delta badges (green/red) |
+| 8 | [QualityGatePanel.tsx](file:///c:/Users/Shithij/CodingProjects/Growth-Intelligence-Engine/frontend/components/panels/QualityGatePanel.tsx) | Pass/fail table, final scores per dimension |
+
+### Global Features
+- Dark glassmorphism theme throughout
+- Export JSON button (header) downloads full pipeline output
+- Pipeline duration displayed in header post-run
+- SSE streaming — panels populate progressively as pipeline runs
+
+---
+
+## Verification Results
+
+| Check | Result |
+|-------|--------|
+| Python syntax (17 files) | ✅ All OK |
+| TypeScript type check | ✅ Zero errors |
+| tailwind.config.ts | ✅ darkMode, typography plugin |
+| LangGraph node count | ✅ 16 nodes, complete flow |
+| Agent files | ✅ 10/10 created |
+| Panel files | ✅ 8/8 created |
+
+---
+
+## How to Run
+
+### 1. Set up API keys
+```bash
+cd backend
+cp .env.example .env
+# Edit .env and fill in:
+# ANTHROPIC_API_KEY=sk-ant-...
+# TAVILY_API_KEY=tvly-...
+```
+
+### 2. Install backend dependencies
+```bash
+cd backend
+pip install -r requirements.txt
+```
+
+### 3. Start backend
+```bash
+cd backend
+uvicorn main:app --reload --port 8000
+```
+
+### 4. Start frontend (separate terminal)
+```bash
+cd frontend
+npm run dev
+```
+
+### 5. Open dashboard
+Navigate to [http://localhost:3000/dashboard](http://localhost:3000/dashboard)
+
+Try the sample keywords: `revenue intelligence`, `data warehouse cost optimization`, `AI in RevOps`

@@ -2,19 +2,91 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --bg: #0f1419;
-  --surface: #1a2332;
-  --border: #2d3a4d;
-  --text: #e6edf3;
-  --muted: #8b9cb3;
-  --accent: #3b82f6;
-  --success: #22c55e;
-  --warning: #eab308;
+@layer base {
+  :root {
+    --background: 5 6 15;
+    --foreground: 240 240 255;
+  }
+
+  * {
+    @apply border-gray-800;
+  }
+
+  body {
+    background: rgb(5, 6, 15);
+    color: rgb(220, 220, 240);
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: rgb(15, 15, 30);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgb(60, 60, 100);
+    border-radius: 3px;
+  }
 }
 
-body {
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
+@layer utilities {
+  .glass {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .glass-hover {
+    @apply glass transition-all duration-200;
+  }
+  .glass-hover:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(99, 102, 241, 0.4);
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, #818cf8 0%, #c084fc 50%, #38bdf8 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .glow-indigo {
+    box-shadow: 0 0 30px rgba(99, 102, 241, 0.15);
+  }
+
+  .score-bar-track {
+    @apply h-2 rounded-full bg-gray-800 overflow-hidden;
+  }
+
+  .score-bar-fill {
+    @apply h-full rounded-full transition-all duration-700;
+  }
+
+  .panel {
+    @apply glass rounded-2xl p-6;
+  }
+
+  .panel-title {
+    @apply text-xs font-semibold uppercase tracking-widest text-indigo-400 mb-4;
+  }
+
+  .badge-pass {
+    @apply px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-500/20 text-emerald-400 border border-emerald-500/30;
+  }
+
+  .badge-fail {
+    @apply px-2 py-0.5 rounded-full text-xs font-medium bg-red-500/20 text-red-400 border border-red-500/30;
+  }
+
+  .tag {
+    @apply px-3 py-1 rounded-full text-xs bg-indigo-500/15 text-indigo-300 border border-indigo-500/20;
+  }
+
+  .copy-btn {
+    @apply flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium
+           bg-indigo-600/20 text-indigo-300 border border-indigo-600/30
+           hover:bg-indigo-600/40 transition-all duration-150 cursor-pointer;
+  }
 }

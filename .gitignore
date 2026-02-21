@@ -1,17 +1,26 @@
-# Backend
-backend/.venv/
-backend/__pycache__/
-backend/.env
-backend/data/chroma/
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.env
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+env/
 
-# Frontend
-frontend/.next/
-frontend/node_modules/
-frontend/.env.local
-frontend/.env*.local
+# Node
+node_modules/
+.next/
+.vercel/
+*.tsbuildinfo
 
-# IDE / OS
-.idea/
-.vscode/
-*.swp
+# Misc
 .DS_Store
+*.log
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local

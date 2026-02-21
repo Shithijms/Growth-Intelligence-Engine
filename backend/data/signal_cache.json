@@ -1,0 +1,28 @@
+{
+  "RAG": {
+    "title": "RAG vs Fine-tuning: When to Use Which (Industry Benchmarks)",
+    "source": "Modular AI / Industry surveys",
+    "source_type": "blog",
+    "summary": "Recent benchmarks show that for knowledge-intensive tasks, RAG often outperforms fine-tuning when the knowledge base is large and evolving. However, retrieval quality — chunking and embedding choice — is the dominant factor; many production RAG systems fail due to retrieval failures rather than model limitations.",
+    "url": "https://example.com/rag-benchmarks",
+    "citation_count": null,
+    "year": 2024,
+    "raw_snippet": "RAG moves the failure mode from the model to the retrieval layer. Most teams are not measuring retrieval F1 in production.",
+    "authority_score": 0.75,
+    "recency_score": 0.9,
+    "relevance_score": 0.95
+  },
+  "data integration": {
+    "title": "The Hidden Cost of Siloed Data Pipelines",
+    "source": "Data Council 2024",
+    "source_type": "blog",
+    "summary": "Surveys indicate that data engineers spend 40%+ of their time on integration and pipeline glue rather than analytics. AI-assisted integration can reduce this, but only when the integration layer has visibility into schema and lineage.",
+    "url": null,
+    "citation_count": null,
+    "year": 2024,
+    "raw_snippet": "Siloed pipelines create invisible failure modes. Integration layers need to be observable.",
+    "authority_score": 0.7,
+    "recency_score": 0.85,
+    "relevance_score": 0.8
+  }
+}

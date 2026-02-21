@@ -182,3 +182,97 @@ It transforms growth from creative guessing into a repeatable, judgment-driven p
 # 🏁 One-Line Summary
 
 Keyword → Real Signal → Strategic Angle → Multi-Platform Content → Iterative Critique → Publish-Ready Authority
+
+---
+
+# 🚀 Setup & Run
+
+## Prerequisites
+
+- Python 3.11+
+- Node.js 18+
+- Google API key (Gemini / Google AI Studio)
+
+## Backend
+
+```bash
+cd backend
+python3 -m venv .venv
+source .venv/bin/activate   # Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+cp .env.example .env
+# Edit .env: set GOOGLE_API_KEY=... (from Google AI Studio)
+```
+
+Optional: set `LLM_STRATEGY` and `LLM_CONTENT` for different Gemini models (e.g. `gemini-2.0-flash`, `gemini-2.5-pro`).
+
+```bash
+# From backend directory, with PYTHONPATH including backend
+export PYTHONPATH="${PYTHONPATH}:$(pwd)"
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
+```
+
+API docs: http://localhost:8000/docs
+
+## Frontend
+
+```bash
+cd frontend
+npm install
+cp .env.example .env.local
+# Set NEXT_PUBLIC_API_URL=http://localhost:8000 (or your backend URL)
+npm run dev
+```
+
+Dashboard: http://localhost:3000
+
+## Sample run
+
+1. Open the dashboard.
+2. Enter keyword **RAG**.
+3. Click **Run pipeline**. Wait for the pipeline to finish (1–2 min typical).
+4. Review signal, strategy brief, chosen/rejected angles, final content, and critique evolution.
+
+---
+
+# 🌐 Deployment
+
+## Backend (Render)
+
+- New Web Service.
+- Root directory: `backend` (or set build command to run from repo root with `cd backend && ...`).
+- Build: `pip install -r requirements.txt`
+- Start: `uvicorn main:app --host 0.0.0.0 --port $PORT`
+- Env: `GOOGLE_API_KEY` (required). Optionally `LLM_STRATEGY`, `LLM_CONTENT`, `SIGNAL_CONFIDENCE_THRESHOLD`.
+
+Render runs from a single directory; if the repo root is used, set **Root Directory** to `backend` in the Render dashboard.
+
+## Frontend (Vercel)
+
+- Import the repo; framework preset: Next.js.
+- Root directory: `frontend`.
+- Env: `NEXT_PUBLIC_API_URL` = your Render backend URL (e.g. `https://your-app.onrender.com`).
+
+After deploy, open the Vercel URL and run a keyword to verify end-to-end.
+
+---
+
+# 📁 Repo structure
+
+```
+backend/
+  agents/          signal, strategy, positioning, long_form, short_form, critique, orchestration
+  config/          settings (env)
+  memory/          Chroma + DataVex corpus loading
+  api/              FastAPI routes
+  utils/            schemas, logging
+  data/             datavex_corpus (markdown), signal_cache.json
+frontend/
+  app/              Next.js App Router pages
+  components/       dashboard UI
+  services/         API client
+docs/
+  architecture.md   data flow and stack
+  demo_script.md    ≤2 min judge demo
+  decisions.md      design rationale
+```

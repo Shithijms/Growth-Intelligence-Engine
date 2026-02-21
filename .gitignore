@@ -1,0 +1,17 @@
+# Backend
+backend/.venv/
+backend/__pycache__/
+backend/.env
+backend/data/chroma/
+
+# Frontend
+frontend/.next/
+frontend/node_modules/
+frontend/.env.local
+frontend/.env*.local
+
+# IDE / OS
+.idea/
+.vscode/
+*.swp
+.DS_Store

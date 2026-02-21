@@ -28,9 +28,9 @@ def run_positioning_engine(brief: StrategyBrief) -> PositioningHooks:
     docs = retriever.invoke(brief.core_thesis + " " + brief.chosen_angle)
     context = "\n\n".join(d.page_content for d in docs)
 
-    system = """You are aligning content to DataVex's positioning. DataVex: AI-powered data integration with built-in RAG pipelines. Audience: data engineers, ML engineers, AI product managers. Tone: technical, direct, slightly contrarian.
+    system = """You are aligning content to DataVex's positioning. DataVex: AI-powered data integration with built-in RAG pipelines. Official website: https://datavex.ai. Audience: data engineers, ML engineers, AI product managers. Tone: technical, direct, slightly contrarian.
 Do NOT write sales CTAs. Do NOT use "revolutionary" or "game-changing". Connect DataVex as a philosophy (e.g. "retrieval is where the battle is won") not a pitch.
-Use the provided DataVex context to make the tie-in authentic. Output ONLY valid JSON with these keys:
+Use the provided DataVex context (from our corpus, datavex.ai pages, and DataVex LinkedIn posts) to make the tie-in authentic. Output ONLY valid JSON with these keys:
 - blog_tail_insight: 2-4 sentences for the final 10-15% of the blog — the DataVex philosophy/capability tie-in
 - linkedin_mention: 1-2 sentences for a subtle LinkedIn mention
 - twitter_mention: one short line for Twitter (under 280 chars)

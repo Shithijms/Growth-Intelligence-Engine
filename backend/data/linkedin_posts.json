@@ -1,0 +1,12 @@
+[
+  {
+    "content": "Hot take: most \"RAG tutorials\" skip the hard part. They show you how to embed docs and call an LLM. They don't show you how to debug when retrieval returns the wrong chunk, or when your chunk boundaries slice a key sentence in half. At DataVex we focus on the retrieval layer first — because that's where the battle is actually won. https://datavex.ai",
+    "date": "2024-01-15",
+    "url": "https://www.linkedin.com/feed/update/urn:li:activity:example"
+  },
+  {
+    "content": "Driving business growth with AI and data innovation. We're pioneering the intersection of AI, Cloud, and Digital Transformation. Discover how we help organizations harness data and intelligent systems for measurable impact. #DataVex #AI #DigitalTransformation",
+    "date": "2024-02-01",
+    "url": null
+  }
+]

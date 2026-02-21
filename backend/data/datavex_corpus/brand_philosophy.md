@@ -1,5 +1,7 @@
 # DataVex Brand Philosophy
 
+**Official website:** https://datavex.ai
+
 ## Core positioning
 
 DataVex is an AI-powered data integration platform with built-in RAG pipelines. We serve data engineers, ML engineers, and AI product managers. Our tone is technical, direct, and slightly contrarian.

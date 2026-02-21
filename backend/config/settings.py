@@ -21,6 +21,13 @@ class Settings(BaseSettings):
     datavex_corpus_dir: str = "./data/datavex_corpus"
     signal_cache_path: str = "./data/signal_cache.json"
 
+    # DataVex website — official site and URLs to fetch for RAG context
+    datavex_website_url: str = "https://datavex.ai"
+    datavex_fetch_urls: str = "https://datavex.ai"  # comma-separated; fetched and indexed at Chroma init
+
+    # LinkedIn posts for RAG context (all DataVex LinkedIn posts)
+    linkedin_posts_path: str = "./data/linkedin_posts.json"  # JSON array of { "content": "...", "date": "...", "url": "..." }
+
     # Thresholds
     signal_confidence_threshold: float = 0.5  # abort if below
 

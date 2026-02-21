@@ -9,6 +9,7 @@ Find emerging technical signals → select a strategic angle → generate multi-
 
 # 🧠 System Overview
 
+![Architecture Diagram](architecture_diagram.jpeg)
 The engine follows a structured editorial pipeline:
 
 ## 1️⃣ Input Layer

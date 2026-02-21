@@ -5,18 +5,25 @@ import re
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_google_genai import ChatGoogleGenerativeAI
 
-from config import settings
+from config.settings import require_google_api_key, settings
 from memory import get_datavex_retriever
 from utils.schemas import PositioningHooks, StrategyBrief
 from utils.logging import get_logger
 
 logger = get_logger(__name__)
 
-LLM = ChatGoogleGenerativeAI(
-    model=settings.llm_strategy,
-    temperature=0.2,
-    google_api_key=settings.google_api_key or None,
-)
+_LLM: ChatGoogleGenerativeAI | None = None
+
+
+def _get_llm() -> ChatGoogleGenerativeAI:
+    global _LLM
+    if _LLM is None:
+        _LLM = ChatGoogleGenerativeAI(
+            model=settings.llm_strategy,
+            temperature=0.2,
+            google_api_key=require_google_api_key(),
+        )
+    return _LLM
 
 
 def run_positioning_engine(brief: StrategyBrief) -> PositioningHooks:
@@ -45,7 +52,7 @@ DataVex context (from our corpus):
 Generate positioning hooks. Output ONLY valid JSON, no markdown."""
 
     try:
-        resp = LLM.invoke([SystemMessage(content=system), HumanMessage(content=user)])
+        resp = _get_llm().invoke([SystemMessage(content=system), HumanMessage(content=user)])
         text = resp.content.strip()
         if "```" in text:
             text = re.sub(r"^```(?:json)?\s*", "", text)

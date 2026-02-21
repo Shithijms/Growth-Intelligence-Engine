@@ -2,17 +2,24 @@
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_google_genai import ChatGoogleGenerativeAI
 
-from config import settings
+from config.settings import require_google_api_key, settings
 from utils.schemas import ExternalSignal, PositioningHooks, StrategyBrief
 from utils.logging import get_logger
 
 logger = get_logger(__name__)
 
-LLM = ChatGoogleGenerativeAI(
-    model=settings.llm_content,
-    temperature=0.5,
-    google_api_key=settings.google_api_key or None,
-)
+_LLM: ChatGoogleGenerativeAI | None = None
+
+
+def _get_llm() -> ChatGoogleGenerativeAI:
+    global _LLM
+    if _LLM is None:
+        _LLM = ChatGoogleGenerativeAI(
+            model=settings.llm_content,
+            temperature=0.5,
+            google_api_key=require_google_api_key(),
+        )
+    return _LLM
 
 
 def generate_blog_draft(
@@ -50,5 +57,5 @@ DataVex tail section (use only at end, in final 10–15%): {positioning.blog_tai
 
     user = base_user + "\nWrite the full blog post now. Output only the post, no meta commentary."
 
-    resp = LLM.invoke([SystemMessage(content=system), HumanMessage(content=user)])
+    resp = _get_llm().invoke([SystemMessage(content=system), HumanMessage(content=user)])
     return (resp.content or "").strip()

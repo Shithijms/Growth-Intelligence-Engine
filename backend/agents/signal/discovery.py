@@ -105,7 +105,7 @@ def run_signal_discovery(keyword: str) -> SignalResult:
                 summary="No curated or live signal found for this keyword.",
             ),
             confidence_score=0.0,
-            confidence_breakdown={"reason": "no_signal_found"},
+            confidence_breakdown={},
             abort_reason="No external signal found for this keyword. Add a curated signal to the cache or enable live search.",
         )
 

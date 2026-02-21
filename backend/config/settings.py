@@ -49,4 +49,14 @@ class Settings(BaseSettings):
         return Path(self.datavex_corpus_dir)
 
 
+def require_google_api_key() -> str:
+    """Return the Google API key, or raise a clear error if not set (avoids ADC fallback)."""
+    key = (settings.google_api_key or "").strip()
+    if not key:
+        raise ValueError(
+            "GOOGLE_API_KEY is required. Set it in backend/.env or as an environment variable. See backend/.env.example."
+        )
+    return key
+
+
 settings = Settings()

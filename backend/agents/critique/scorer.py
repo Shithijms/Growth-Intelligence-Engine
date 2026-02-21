@@ -5,17 +5,24 @@ import re
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_google_genai import ChatGoogleGenerativeAI
 
-from config import settings
+from config.settings import require_google_api_key, settings
 from utils.schemas import CritiqueResult, CritiqueScores
 from utils.logging import get_logger
 
 logger = get_logger(__name__)
 
-LLM = ChatGoogleGenerativeAI(
-    model=settings.llm_strategy,
-    temperature=0.2,
-    google_api_key=settings.google_api_key or None,
-)
+_LLM: ChatGoogleGenerativeAI | None = None
+
+
+def _get_llm() -> ChatGoogleGenerativeAI:
+    global _LLM
+    if _LLM is None:
+        _LLM = ChatGoogleGenerativeAI(
+            model=settings.llm_strategy,
+            temperature=0.2,
+            google_api_key=require_google_api_key(),
+        )
+    return _LLM
 
 
 def _parse_scores(data: dict) -> CritiqueScores:
@@ -62,7 +69,7 @@ Content:
 Score and critique. Output ONLY valid JSON."""
 
     try:
-        resp = LLM.invoke([SystemMessage(content=system), HumanMessage(content=user)])
+        resp = _get_llm().invoke([SystemMessage(content=system), HumanMessage(content=user)])
         text = resp.content.strip()
         if "```" in text:
             text = re.sub(r"^```(?:json)?\s*", "", text)
